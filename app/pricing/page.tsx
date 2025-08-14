@@ -109,49 +109,51 @@ export default function PricingPage() {
           <div className="grid gap-6 max-w-3xl mx-auto grid-cols-1 md:grid-cols-2">
             {currentPlans.map((plan, index) => {
               const isPopular = plan.price_name.includes('年订阅1')
-              const period = plan.price_type === 'monthly' ? '/月' : '/年'
-              const discount = plan.price_type === 'yearly' ? '30% OFF' : undefined
+              const period = plan.price_type === 'monthly' ? t('starterPeriod') : t('yearlyPeriod')
+              const discount = plan.price_type === 'yearly' ? t('discount30') : undefined
               
               // 根据计划类型和名称获取对应的翻译内容
               let planTitle, planPrice, planDesc, planFeatures
               
               if (plan.price_type === 'monthly') {
-                if (plan.price_name.includes('月订阅1')) {
+                if (plan.price_name.includes('月套餐（基础版）')) {
                   planTitle = t('starterPlan')
                   planPrice = t('starterPrice')
                   planDesc = t('starterDesc')
                   planFeatures = t('starterFeatures').split(',')
-                } else if (plan.price_name.includes('月订阅2')) {
+                } else if (plan.price_name.includes('月套餐（专业版）')) {
                   planTitle = t('professionalPlan')
                   planPrice = t('professionalPrice')
                   planDesc = t('professionalDesc')
                   planFeatures = t('professionalFeatures').split(',')
+                } else {
+                  planTitle = t('starterPlan')
+                  planPrice = t('starterPrice')
+                  planDesc = t('starterDesc')
+                  planFeatures = t('starterFeatures').split(',')
                 }
               } else if (plan.price_type === 'yearly') {
-                if (plan.price_name.includes('年订阅1')) {
+                if (plan.price_name.includes('年套餐（基础版）')) {
                   planTitle = t('enterprisePlan')
                   planPrice = t('enterprisePrice')
                   planDesc = t('enterpriseDesc')
                   planFeatures = t('enterpriseFeatures').split(',')
-                } else if (plan.price_name.includes('年订阅2')) {
+                } else if (plan.price_name.includes('年套餐（专业版）')) {
                   planTitle = t('yearlyPlan')
                   planPrice = t('yearlyPrice')
                   planDesc = t('yearlyDesc')
                   planFeatures = t('yearlyFeatures').split(',')
+                } else {
+                  planTitle = t('enterprisePlan')
+                  planPrice = t('enterprisePrice')
+                  planDesc = t('enterpriseDesc')
+                  planFeatures = t('enterpriseFeatures').split(',')
                 }
-              }
-              
-              // 如果没有找到对应的翻译，使用默认值
-              if (!planTitle) {
-                planTitle = plan.price_name
-                planPrice = `$${plan.price}`
-                planDesc = plan.price_description
-                planFeatures = [`${plan.credits_amount}积分`, '高清视频生成', '优先客服支持', '无使用限制']
-              }
-              
-              // 确保planFeatures已定义
-              if (!planFeatures) {
-                planFeatures = [`${plan.credits_amount}积分`, '高清视频生成', '优先客服支持', '无使用限制']
+              } else {
+                planTitle = t('starterPlan')
+                planPrice = t('starterPrice')
+                planDesc = t('starterDesc')
+                planFeatures = t('starterFeatures').split(',')
               }
 
               return (

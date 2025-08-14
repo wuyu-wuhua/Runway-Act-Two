@@ -15,7 +15,7 @@ Allow: /privacy
 Allow: /terms
 
 # 站点地图
-Sitemap: https://runway-act-two.vercel.app/sitemap.xml
+Sitemap: https://runwayacttwo.online/sitemap.xml
 
 # 爬取延迟（可选）
 Crawl-delay: 1

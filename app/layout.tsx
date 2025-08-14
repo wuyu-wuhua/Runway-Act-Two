@@ -19,14 +19,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://runway-act-two.vercel.app'),
+  metadataBase: new URL('https://runwayacttwo.online'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: 'Runway Act Two - AI Video Effects Generator',
     description: 'Create stunning AI - powered video effects with our advanced generator. Transform your videos with cutting-edge technology and AI innovation.',
-    url: 'https://runway-act-two.vercel.app',
+    url: 'https://runwayacttwo.online',
     siteName: 'Runway Act Two',
     images: [
       {

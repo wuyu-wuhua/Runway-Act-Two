@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     title: '在线 AI 视频特效生成器 | Runway Act Two',
     description: '使用 Runway Act Two (基于 act one) 模型在线生成 AI 特效视频。上传视频和参考图，一分钟内获得惊艳效果。专为特效师打造。',
     type: 'website',
-    url: 'https://runway-act-two.com/ai-effect-generator',
+    url: 'https://runwayacttwo.online/ai-effect-generator',
   },
   twitter: {
     card: 'summary_large_image',

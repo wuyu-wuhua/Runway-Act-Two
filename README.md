@@ -159,8 +159,3 @@ MIT License
 
 欢迎提交Issue和Pull Request！
 
-## 📞 联系
-
-如有问题，请通过以下方式联系：
-- 邮箱: contact@runway-act-two.com
-- GitHub: [项目仓库](https://github.com/your-username/runway-act-two) 
