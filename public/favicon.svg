@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <!-- 主背景渐变 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f23;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a2e;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 主色调渐变 -->
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 发光效果 -->
+    <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.4" />
+      <stop offset="70%" style="stop-color:#6366f1;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- 高光效果 -->
+    <linearGradient id="highlightGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.6" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 主背景 -->
+  <rect width="64" height="64" rx="18" fill="url(#bgGradient)"/>
+  
+  <!-- 发光效果 -->
+  <rect width="64" height="64" rx="18" fill="url(#glowGradient)"/>
+  
+  <!-- 中心主圆形 -->
+  <circle cx="32" cy="32" r="20" fill="url(#primaryGradient)"/>
+  
+  <!-- 内圈高光 -->
+  <circle cx="32" cy="32" r="16" fill="url(#highlightGradient)" opacity="0.3"/>
+  
+  <!-- 视频播放按钮 -->
+  <polygon points="25,20 25,44 43,32" fill="#ffffff"/>
+  
+  <!-- 四个角落的装饰元素 -->
+  <circle cx="14" cy="14" r="2.5" fill="#10b981" opacity="0.9"/>
+  <circle cx="50" cy="14" r="2.5" fill="#f59e0b" opacity="0.9"/>
+  <circle cx="14" cy="50" r="2.5" fill="#ef4444" opacity="0.9"/>
+  <circle cx="50" cy="50" r="2.5" fill="#3b82f6" opacity="0.9"/>
+  
+  <!-- 中心十字线 -->
+  <line x1="32" y1="20" x2="32" y2="44" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+  <line x1="20" y1="32" x2="44" y2="32" stroke="#ffffff" stroke-width="1" opacity="0.7"/>
+  
+  <!-- 外圈装饰环 -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#6366f1" stroke-width="1" opacity="0.3"/>
+</svg>

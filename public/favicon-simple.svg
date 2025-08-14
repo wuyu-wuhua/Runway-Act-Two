@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <!-- 背景渐变 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 主色调渐变 -->
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 发光效果 -->
+    <radialGradient id="glowGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  
+  <!-- 主背景 -->
+  <rect width="64" height="64" rx="20" fill="url(#bgGradient)"/>
+  
+  <!-- 发光效果 -->
+  <rect width="64" height="64" rx="20" fill="url(#glowGradient)"/>
+  
+  <!-- 中心圆形 -->
+  <circle cx="32" cy="32" r="18" fill="url(#primaryGradient)"/>
+  
+  <!-- 视频播放按钮 -->
+  <polygon points="26,22 26,42 42,32" fill="#ffffff"/>
+  
+  <!-- 四个角落的装饰点 -->
+  <circle cx="16" cy="16" r="2" fill="#8b5cf6" opacity="0.6"/>
+  <circle cx="48" cy="16" r="2" fill="#8b5cf6" opacity="0.6"/>
+  <circle cx="16" cy="48" r="2" fill="#8b5cf6" opacity="0.6"/>
+  <circle cx="48" cy="48" r="2" fill="#8b5cf6" opacity="0.6"/>
+</svg>
