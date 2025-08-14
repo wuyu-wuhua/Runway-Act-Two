@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '缺少站点URL' }, { status: 400 });
     }
 
-    // 获取或创建 Stripe Customer
+    // 获取或创建 Stripe Customer.
     const { data: user } = await supabase
       .from('users')
       .select('*')
