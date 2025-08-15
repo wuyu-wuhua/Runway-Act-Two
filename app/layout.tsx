@@ -5,6 +5,9 @@ import Feedback from '@/components/Feedback'
 
 import { LanguageProvider } from '@/lib/languageContext'
 import { AuthProvider } from '@/lib/authContext'
+import { CookieConsentProvider } from '@/lib/cookie-consent/CookieConsentProvider'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
+import MicrosoftClarity from '@/components/MicrosoftClarity'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -66,11 +69,11 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <head>
+      <meta name="google-site-verification" content="I2bQ6-s-sMIhfytU_srriX5lHpLl2yej3r43sdvvRIU" />
         <link rel="icon" type="image/svg+xml" href="/favicon-simple.svg" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#8b5cf6" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="google-site-verification" content="U8BgBWssvSUzwM2k-dfLwk5osNNWUnK1LPUB23nr3fc" />
       </head>
       <body className={inter.className}>
         <LanguageProvider>
@@ -78,6 +81,10 @@ export default function RootLayout({
             <div className="min-h-screen bg-gray-50">
               {children}
               <Feedback />
+              <CookieConsentProvider />
+              <GoogleAnalytics />
+              <MicrosoftClarity />
+
             </div>
           </AuthProvider>
         </LanguageProvider>
