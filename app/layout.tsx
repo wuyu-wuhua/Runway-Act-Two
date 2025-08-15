@@ -70,6 +70,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#8b5cf6" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="google-site-verification" content="U8BgBWssvSUzwM2k-dfLwk5osNNWUnK1LPUB23nr3fc" />
       </head>
       <body className={inter.className}>
         <LanguageProvider>
