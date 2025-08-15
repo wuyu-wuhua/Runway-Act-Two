@@ -23,27 +23,27 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
-  openGraph: {
-    title: 'Runway Act Two - AI Video Effects Generator',
-    description: 'Create stunning AI - powered video effects with our advanced generator. Transform your videos with cutting-edge technology and AI innovation.',
-    url: 'https://runwayacttwo.online',
-    siteName: 'Runway Act Two',
-    images: [
-      {
-        url: '/default-avatar.svg',
-        width: 1200,
-        height: 630,
-        alt: 'Runway Act Two - AI Video Effects Generator',
-      },
-    ],
-    locale: 'zh_CN',
-    type: 'website',
-  },
+      openGraph: {
+      title: 'Runway Act Two - AI Video Effects Generator',
+      description: 'Create stunning AI - powered video effects with our advanced generator. Transform your videos with cutting-edge technology and AI innovation.',
+      url: 'https://runwayacttwo.online',
+      siteName: 'Runway Act Two',
+      images: [
+        {
+          url: '/111111.png',
+          width: 1200,
+          height: 630,
+          alt: 'Runway Act Two - AI Video Effects Generator',
+        },
+      ],
+      locale: 'zh_CN',
+      type: 'website',
+    },
   twitter: {
     card: 'summary_large_image',
     title: 'Runway Act Two - AI Video Effects Generator',
     description: 'Create stunning AI - powered video effects with our advanced generator. Transform your videos with cutting-edge technology and AI innovation.',
-    images: ['/default-avatar.svg'],
+    images: ['/111111.png'],
   },
   robots: {
     index: true,
