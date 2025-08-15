@@ -1,21 +1,11 @@
 User-agent: *
 Allow: /
 
-# 禁止爬取管理页面和API
+# 禁止访问敏感路径
 Disallow: /api/
 Disallow: /admin/
-Disallow: /debug-auth/
+Disallow: /debug/
+Disallow: /env-check/
 
-# 允许爬取主要页面
-Allow: /
-Allow: /about
-Allow: /blog
-Allow: /pricing
-Allow: /privacy
-Allow: /terms
-
-# 站点地图
+# 安全设置
 Sitemap: https://runwayacttwo.online/sitemap.xml
-
-# 爬取延迟（可选）
-Crawl-delay: 1
