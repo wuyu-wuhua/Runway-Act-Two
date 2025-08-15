@@ -151,7 +151,7 @@ export const translations = {
     dataPortability: "数据可携带性",
     contactUs: "联系我们",
     contactUsDesc: "如果您对本隐私政策有任何疑问或需要行使您的权利，请通过以下方式联系我们：",
-    email: "邮箱：media@runwayacttwo.online",
+    email: "邮箱：media@act2ai.com",
     phone: "电话：+023 6287 2229",
 
     // 关于我们页面
@@ -406,7 +406,7 @@ export const translations = {
     
     // 反馈组件
     feedback: "问题反馈",
-    feedbackEmail: "media@runwayacttwo.online",
+    feedbackEmail: "media@act2ai.com",
     feedbackEmailSubject: "问题反馈",
     feedbackEmailBody: "您好，我想反馈以下问题：",
     
@@ -604,7 +604,7 @@ export const translations = {
     dataPortability: "Data portability",
     contactUs: "Contact Us",
     contactUsDesc: "If you have any questions about this privacy policy or need to exercise your rights, please contact us through the following methods:",
-    email: "Email: media@runwayacttwo.online",
+    email: "Email: media@act2ai.com",
     phone: "Phone: +023 6287 2229",
 
     // About Us Page
@@ -859,7 +859,7 @@ export const translations = {
     
     // Feedback Component
     feedback: "Feedback",
-    feedbackEmail: "media@runwayacttwo.online",
+    feedbackEmail: "media@act2ai.com",
     feedbackEmailSubject: "Feedback",
     feedbackEmailBody: "Hello, I would like to provide the following feedback:",
     

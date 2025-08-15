@@ -40,8 +40,8 @@ export default function SecurityPolicyPage() {
                 如果您发现任何安全漏洞或可疑活动，请立即联系我们：
               </p>
               <p className="text-blue-600">
-                <a href="mailto:security@runwayacttwo.online" className="hover:underline">
-                  security@runwayacttwo.online
+                <a href="mailto:security@act2ai.com" className="hover:underline">
+                  security@act2ai.com
                 </a>
               </p>
             </section>

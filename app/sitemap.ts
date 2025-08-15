@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://runwayacttwo.online'
+  const baseUrl = 'https://act2ai.com'
   
   return [
     {

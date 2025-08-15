@@ -8,4 +8,4 @@ Disallow: /debug/
 Disallow: /env-check/
 
 # 安全设置
-Sitemap: https://runwayacttwo.online/sitemap.xml
+Sitemap: https://act2ai.com/sitemap.xml
