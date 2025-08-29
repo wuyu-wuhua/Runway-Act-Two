@@ -7,7 +7,7 @@ export { CookieBlocker } from './core/blocker';
 export { ConsentModal } from './components/ConsentModal';
 export { CookieBanner } from './components/CookieBanner';
 export { CookieConsentProvider } from './CookieConsentProvider';
-export { CookieConsentDebug } from './CookieConsentDebug';
+// export { CookieConsentDebug } from './CookieConsentDebug';
 
 // 类型导出
 export type {

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import Header from '@/components/Header';
 import LoginDialog from '@/components/LoginDialog';
+import { processVideoGeneration } from '@/lib/credits';
 // 移除 Runway SDK 导入，改为使用服务器端 API
 interface GenerationTask {
   id: string;
@@ -32,10 +33,12 @@ export default function AIEffectGeneratorPage() {
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
   
   const videoInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const progressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // 清理预览URL的函数
   const cleanupPreview = (url: string | null) => {
@@ -54,6 +57,23 @@ export default function AIEffectGeneratorPage() {
       }
     };
   }, [videoPreview, imagePreview]);
+
+  // 监听第四步状态，确保视频URL正确设置
+  useEffect(() => {
+    if (currentStep === 4) {
+      console.log('🔍 第四步状态检查:');
+      console.log('当前步骤:', currentStep);
+      console.log('生成的视频URL:', generatedVideoUrl);
+      console.log('生成状态:', isGenerating);
+      console.log('错误状态:', error);
+      
+      // 如果进入第四步但没有视频URL，尝试重新获取
+      if (!generatedVideoUrl && currentTask) {
+        console.log('⚠️ 进入第四步但视频URL未设置，尝试重新获取任务状态');
+        // 这里可以添加重新获取任务状态的逻辑
+      }
+    }
+  }, [currentStep, generatedVideoUrl, isGenerating, error, currentTask]);
 
   // 检查登录状态的函数
   const checkLoginStatus = () => {
@@ -80,6 +100,10 @@ export default function AIEffectGeneratorPage() {
     setError(null);
     setGenerationProgress(t('uploadingFiles'));
     setCurrentStep(3); // 立即进入第3步，避免闪烁
+    setIsCancelling(false); // 确保取消状态重置
+
+    // 创建AbortController用于取消请求
+    abortControllerRef.current = new AbortController();
 
     try {
       // 上传图片文件（角色图片）
@@ -161,6 +185,12 @@ export default function AIEffectGeneratorPage() {
       let attempts = 0;
 
       while (attempts < maxAttempts) {
+        // 添加额外的安全检查
+        if (abortControllerRef.current?.signal.aborted) {
+          console.log('Request was aborted, stopping polling');
+          break;
+        }
+        
         await new Promise(resolve => setTimeout(resolve, 5000)); // 每5秒检查一次
 
         const statusResponse = await fetch('/api/runway', {
@@ -182,34 +212,188 @@ export default function AIEffectGeneratorPage() {
 
         finalTask = statusResult.task;
         
-        // 使用防抖更新进度
+        // 更新进度显示
         if (progressTimeoutRef.current) {
           clearTimeout(progressTimeoutRef.current);
         }
+        
+        let progressText = '';
+        if (finalTask.status === 'RUNNING') {
+          progressText = `处理中... ${finalTask.progress || 0}%`;
+        } else if (finalTask.status === 'PENDING') {
+          progressText = '等待中...';
+        } else if (finalTask.status === 'FAILED') {
+          progressText = '处理失败';
+        } else if (finalTask.status === 'COMPLETED') {
+          progressText = '处理完成';
+        }
+        
         progressTimeoutRef.current = setTimeout(() => {
-          setGenerationProgress(`处理中: ${finalTask.status}`);
+          setGenerationProgress(progressText);
         }, 200);
 
-        if (finalTask.status === 'completed' || finalTask.status === 'failed') {
-          break;
+        // 检查任务是否完成
+        if (finalTask.status === 'SUCCEEDED' || finalTask.status === 'FAILED' || 
+            finalTask.status === 'completed' || finalTask.status === 'failed') {
+          console.log(`Task completed with status: ${finalTask.status}, stopping polling`);
+          break; // 退出轮询循环
         }
 
         attempts++;
       }
 
-      if (finalTask.status === 'completed' && finalTask.result?.video_url) {
-        setGeneratedVideoUrl(finalTask.result.video_url);
-        setCurrentStep(4);
-      } else {
-        throw new Error(finalTask.error || t('generationFailed'));
+            // 处理最终任务结果
+      console.log('🔍 开始处理最终任务结果...');
+      console.log('📊 任务状态:', finalTask.status);
+      console.log('📹 任务输出:', finalTask.output);
+      console.log('🔗 输出URL:', finalTask.output?.[0]);
+      console.log('🔍 完整任务对象:', JSON.stringify(finalTask, null, 2));
+      
+      // 尝试多种可能的输出字段
+      let videoUrl = finalTask.output?.[0];
+      console.log('🔍 尝试 output[0]:', videoUrl);
+      
+      if (!videoUrl) {
+        // 尝试其他可能的字段
+        videoUrl = finalTask.result?.video_url;
+        console.log('🔍 尝试 result.video_url:', videoUrl);
       }
+      if (!videoUrl) {
+        videoUrl = finalTask.video_url;
+        console.log('🔍 尝试 video_url:', videoUrl);
+      }
+      if (!videoUrl) {
+        videoUrl = finalTask.url;
+        console.log('🔍 尝试 url:', videoUrl);
+      }
+      if (!videoUrl) {
+        // 尝试result中的其他字段
+        videoUrl = finalTask.result?.url;
+        console.log('🔍 尝试 result.url:', videoUrl);
+      }
+      if (!videoUrl) {
+        // 尝试result中的output字段
+        videoUrl = finalTask.result?.output?.[0];
+        console.log('🔍 尝试 result.output[0]:', videoUrl);
+      }
+      if (!videoUrl) {
+        // 尝试result中的video字段
+        videoUrl = finalTask.result?.video;
+        console.log('🔍 尝试 result.video:', videoUrl);
+      }
+      
+      console.log('🎯 最终找到的视频URL:', videoUrl);
+      
+              if ((finalTask.status === 'SUCCEEDED' || finalTask.status === 'completed') && videoUrl) {
+          console.log('🎉 视频生成成功！输出URL:', videoUrl);
+          
+          // 扣除用户积分
+          if (user?.id) {
+            try {
+              const result = await processVideoGeneration(user.id, 30); // 假设生成30秒视频
+              if (!result.success) {
+                console.error('积分扣除失败:', result.error);
+                // 即使积分扣除失败，仍然显示成功，但记录错误
+              } else {
+                console.log('✅ 积分扣除成功');
+              }
+            } catch (error) {
+              console.error('积分扣除过程中出错:', error);
+            }
+          }
+          
+          // 先设置视频URL，确保状态正确
+          setGeneratedVideoUrl(videoUrl);
+          
+          // 清除所有生成相关状态
+          setIsGenerating(false);
+          setGenerationProgress('');
+          setError(null);
+          
+          // 最后进入第四步
+          setCurrentStep(4);
+          
+          console.log('🚀 进入第四步，显示生成的视频');
+          console.log('🎬 视频URL已设置:', videoUrl);
+        } else if (finalTask.status === 'FAILED' || finalTask.status === 'failed') {
+          // 处理特定的失败情况
+          let errorMessage = finalTask.error || t('generationFailed');
+          
+          // 根据错误代码提供更友好的错误信息
+          if (finalTask.failureCode === 'NO_FACE_FOUND') {
+            errorMessage = '未检测到人脸。请确保上传的图片包含清晰的人脸，并且人脸部分足够大且清晰。';
+          } else if (finalTask.failureCode === 'INVALID_IMAGE') {
+            errorMessage = '图片格式无效或质量过低。请上传清晰的JPG或PNG格式图片。';
+          } else if (finalTask.failureCode === 'FILE_TOO_LARGE') {
+            errorMessage = '文件过大。请确保图片小于5MB，视频小于500MB。';
+          } else if (finalTask.failure) {
+            errorMessage = finalTask.failure;
+          }
+          
+          throw new Error(errorMessage);
+        } else {
+          // 超时或其他未知状态
+          console.log('⚠️ 进入超时分支，状态:', finalTask.status);
+          console.log('❌ 任务成功但无法获取视频URL');
+          console.log('🔍 可能的原因:');
+          console.log('  - 任务刚完成，输出URL还未准备好');
+          console.log('  - API响应结构不匹配');
+          console.log('  - 需要等待更长时间');
+          
+          // 如果任务成功但没有URL，等待一下再重试
+          if (finalTask.status === 'SUCCEEDED') {
+            console.log('⏳ 任务成功，等待5秒后重试获取URL...');
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            
+            // 重新获取任务状态
+            try {
+              const retryResponse = await fetch('/api/runway', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  action: 'getTaskStatus',
+                  taskId: task.id,
+                }),
+              });
+              
+              const retryResult = await retryResponse.json();
+              if (retryResponse.ok && retryResult.task) {
+                const retryTask = retryResult.task;
+                console.log('🔄 重试获取任务状态:', retryTask.status);
+                console.log('📹 重试任务输出:', retryTask.output);
+                
+                // 再次尝试获取视频URL
+                let retryVideoUrl = retryTask.output?.[0] || retryTask.result?.video_url || retryTask.video_url || retryTask.url;
+                if (retryVideoUrl) {
+                  console.log('🎉 重试成功！找到视频URL:', retryVideoUrl);
+                  setGeneratedVideoUrl(retryVideoUrl);
+                  setIsGenerating(false);
+                  setGenerationProgress('');
+                  setError(null);
+                  setCurrentStep(4);
+                  return; // 成功，直接返回
+                }
+              }
+            } catch (retryError) {
+              console.error('重试获取任务状态失败:', retryError);
+            }
+          }
+          
+          throw new Error('生成成功但无法获取视频URL，请稍后重试或联系客服。');
+        }
 
     } catch (err) {
       setError(err instanceof Error ? err.message : t('generationError'));
-      setCurrentStep(2); // 回到第2步
+      // 只有在失败时才回到第2步，成功时不应该改变步骤
+      if (currentStep === 3) {
+        setCurrentStep(2);
+      }
     } finally {
-      setIsGenerating(false);
-      setGenerationProgress('');
+      // 只有在没有成功生成时才重置状态
+      if (currentStep !== 4) {
+        setIsGenerating(false);
+        setGenerationProgress('');
+      }
     }
   };
 
@@ -281,7 +465,7 @@ export default function AIEffectGeneratorPage() {
                     imageInputRef.current?.click();
                   }}
                 >
-                  <div className="text-6xl mb-6">🖼️</div>
+                
                   <h4 className="text-xl font-semibold text-white mb-3">
                     {t('uploadImage')}
                   </h4>
@@ -297,7 +481,7 @@ export default function AIEffectGeneratorPage() {
                 <div className="bg-gray-800 rounded-lg p-4">
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-24 h-24 bg-gray-700 rounded flex items-center justify-center">
-                      <span className="text-2xl">🖼️</span>
+                 
                     </div>
                     <div className="flex-1">
                       <h4 className="text-white font-semibold text-sm">{imageFile.name}</h4>
@@ -449,26 +633,111 @@ export default function AIEffectGeneratorPage() {
           {currentStep === 3 && (
             <div className="mb-8">
               <div className="text-center py-8">
-                <div className="text-6xl mb-4 animate-spin">✨</div>
-                <h4 className="text-2xl font-semibold text-white mb-4">
-                  {t('generating')}
-                </h4>
-                <p className="text-gray-300 text-lg mb-4">
-                  {generationProgress || t('generatingDesc')}
-                </p>
-                {error && (
-                  <div className="mt-4 p-4 bg-red-900/50 border border-red-500 rounded-lg">
-                    <p className="text-red-300 text-sm">{error}</p>
+                {!error ? (
+                  <>
+                    <div className="text-6xl mb-4 animate-spin">✨</div>
+                    <h4 className="text-2xl font-semibold text-white mb-4">
+                      {t('generating')}
+                    </h4>
+                    <p className="text-gray-300 text-lg mb-4">
+                      {generationProgress || t('generatingDesc')}
+                    </p>
+                    <div className="mt-8">
+                      <div className="w-full bg-gray-700 rounded-full h-3">
+                        <div 
+                          className="h-3 rounded-full transition-all duration-500 bg-purple-500" 
+                          style={{ width: isGenerating ? '60%' : '100%' }} 
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* 取消按钮 */}
+                    <div className="mt-6">
+                      <Button
+                        onClick={() => {
+                          if (abortControllerRef.current) {
+                            abortControllerRef.current.abort();
+                          }
+                          setIsCancelling(true);
+                          setIsGenerating(false);
+                          setCurrentStep(2);
+                        }}
+                        variant="outline"
+                        className="text-red-400 border-red-400 hover:bg-red-400 hover:text-white px-6 py-2 rounded-lg"
+                        disabled={isCancelling}
+                      >
+                        {isCancelling ? '取消中...' : '取消生成'}
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center">
+                    <div className="text-6xl mb-4">⚠️</div>
+                    <h4 className="text-2xl font-semibold text-red-400 mb-4">
+                      生成失败
+                    </h4>
+                    <div className="mt-4 p-6 bg-red-900/30 border border-red-500 rounded-lg max-w-2xl mx-auto">
+                      <p className="text-red-300 text-lg mb-4">{error}</p>
+                      
+                      {/* 针对特定错误的建议 */}
+                      {error.includes('未检测到人脸') && (
+                        <div className="text-left text-sm text-red-200 space-y-2">
+                          <p className="font-semibold">💡 建议：</p>
+                          <ul className="list-disc list-inside space-y-1 ml-4">
+                            <li>确保图片中有清晰的人脸</li>
+                            <li>人脸部分应该占据图片的较大比例</li>
+                            <li>避免模糊、过暗或过亮的图片</li>
+                            <li>确保人脸没有被遮挡</li>
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {error.includes('图片格式无效') && (
+                        <div className="text-left text-sm text-red-200 space-y-2">
+                          <p className="font-semibold">💡 建议：</p>
+                          <ul className="list-disc list-inside space-y-1 ml-4">
+                            <li>使用JPG或PNG格式的图片</li>
+                            <li>确保图片分辨率足够高</li>
+                            <li>避免使用截图或压缩过度的图片</li>
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {error.includes('视频格式无效') && (
+                        <div className="text-left text-sm text-red-200 space-y-2">
+                          <p className="font-semibold">💡 建议：</p>
+                          <ul className="list-disc list-inside space-y-1 ml-4">
+                            <li>使用MP4或MOV格式的视频</li>
+                            <li>确保视频质量良好</li>
+                            <li>避免使用过短或过长的视频</li>
+                          </ul>
+                        </div>
+                      )}
+                      
+                      <div className="mt-6 flex justify-center space-x-4">
+                        <Button
+                          onClick={() => {
+                            setError(null);
+                            setCurrentStep(2);
+                          }}
+                          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg"
+                        >
+                          重新选择文件
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setError(null);
+                            handleGenerateVideo();
+                          }}
+                          className="text-purple-400 border-purple-400 hover:bg-purple-400 hover:text-white px-6 py-2 rounded-lg"
+                        >
+                          重试
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 )}
-                <div className="mt-8">
-                  <div className="w-full bg-gray-700 rounded-full h-3">
-                    <div 
-                      className="h-3 rounded-full transition-all duration-500 bg-purple-500" 
-                      style={{ width: isGenerating ? '60%' : '100%' }} 
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           )}
@@ -477,22 +746,29 @@ export default function AIEffectGeneratorPage() {
             <div className="mb-8">
               <div className="bg-gray-800 rounded-lg p-6">
                 <div className="text-center">
-                  <div className="text-6xl mb-4">🎉</div>
-                  <h4 className="text-2xl font-semibold text-white mb-4">
-                    {t('generationSuccess')}
-                  </h4>
-                  <p className="text-gray-300 text-lg mb-6">
-                    {t('generationSuccess')}
-                  </p>
-                  {generatedVideoUrl && (
+                  {generatedVideoUrl ? (
                     <div className="mt-6">
-                      <video 
-                        controls 
-                        className="w-full max-h-96 rounded-lg mx-auto"
-                        src={generatedVideoUrl}
-                      >
-                        {t('browserNotSupportVideo')}
-                      </video>
+                     
+                      <div className="mt-6">
+                        <video 
+                          controls 
+                          className="w-full max-h-96 rounded-lg mx-auto border-2 border-purple-500"
+                          src={generatedVideoUrl}
+                          onLoadStart={() => console.log('🎬 开始加载视频...')}
+                          onLoadedData={() => console.log('✅ 视频加载完成')}
+                          onError={(e) => console.error('❌ 视频加载失败:', e)}
+                        >
+                          {t('browserNotSupportVideo')}
+                        </video>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-6 p-4 bg-red-900/30 border border-red-500 rounded-lg">
+                      <p className="text-red-300">⚠️ 视频URL未设置，请检查生成状态</p>
+                      <p className="text-sm text-red-200 mt-2">
+                        当前状态: {currentStep === 4 ? '第四步' : '未知'}<br/>
+                        视频URL: {generatedVideoUrl || '未设置'}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -531,6 +807,14 @@ export default function AIEffectGeneratorPage() {
               <div className="flex space-x-4">
                 <Button
                   className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg"
+                  onClick={() => {
+                    if (generatedVideoUrl) {
+                      const link = document.createElement('a');
+                      link.href = generatedVideoUrl;
+                      link.download = 'ai-generated-video.mp4';
+                      link.click();
+                    }
+                  }}
                 >
                   {t('downloadVideo')}
                 </Button>

@@ -159,8 +159,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({
             success: true,
             task: {
-              id: task.id,
-              status: task.status || 'pending',
+              ...task
             }
           });
                  } catch (apiError: any) {
@@ -219,14 +218,13 @@ export async function POST(request: NextRequest) {
           const taskStatus = await client.tasks.retrieve(taskId) as TaskResponse;
           
           console.log('Task status retrieved:', taskStatus);
+          console.log('Full task object:', JSON.stringify(taskStatus, null, 2));
           
+          // 返回完整的任务对象，包括所有可能的字段
           return NextResponse.json({
             success: true,
             task: {
-              id: taskStatus.id,
-              status: taskStatus.status,
-              result: taskStatus.result,
-              error: taskStatus.error,
+              ...taskStatus
             }
           });
         } catch (error: any) {

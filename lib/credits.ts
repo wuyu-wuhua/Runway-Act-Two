@@ -109,33 +109,58 @@ export async function recordUserUsage(
   resolution?: string
 ): Promise<boolean> {
   try {
+    console.log('开始记录用户使用情况:', { userId, durationSeconds, creditsConsumed, videoDuration, resolution });
+    
     // 获取用户当前套餐信息
-    const { data: user } = await supabase
+    const { data: user, error: userError } = await supabase
       .from('users')
       .select('price_name, price_type')
       .eq('id', userId)
       .single();
 
-    const { error } = await supabase
-      .from('user_usage')
-      .insert({
-        user_id: userId,
-        duration_used: durationSeconds,
-        credits_consumed: creditsConsumed,
-        video_duration: videoDuration,
-        resolution: resolution,
-        price_name: user?.price_name,
-        price_type: user?.price_type || 'free',
-      });
-
-    if (error) {
-      console.error('记录使用情况失败:', error);
+    if (userError) {
+      console.error('获取用户套餐信息失败:', userError);
       return false;
     }
 
+    console.log('用户套餐信息:', user);
+
+    // 准备插入数据
+    const insertData = {
+      user_id: userId,
+      generations_used: 1,
+      duration_used: durationSeconds,
+      credits_consumed: creditsConsumed,
+      video_duration: videoDuration || null,
+      resolution: resolution || null,
+      price_name: user?.price_name || null,
+      // 确保 price_type 符合数据库约束
+      price_type: (user?.price_type && ['free', 'monthly', 'yearly'].includes(user.price_type)) 
+        ? user.price_type 
+        : 'free',
+    };
+
+    console.log('准备插入的数据:', insertData);
+
+    const { error } = await supabase
+      .from('user_usage')
+      .insert(insertData);
+
+    if (error) {
+      console.error('记录使用情况失败:', error);
+      console.error('错误详情:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+      return false;
+    }
+
+    console.log('记录使用情况成功');
     return true;
   } catch (error) {
-    console.error('记录使用情况失败:', error);
+    console.error('记录使用情况过程中出错:', error);
     return false;
   }
 }
@@ -233,7 +258,7 @@ export async function getUserUsageStats(userId: number) {
       return null;
     }
 
-    const totalGenerations = data.length;
+    const totalGenerations = data.reduce((sum, usage) => sum + (usage.generations_used || 1), 0);
     const totalDuration = data.reduce((sum, usage) => sum + usage.duration_used, 0);
     const totalCreditsConsumed = data.reduce((sum, usage) => sum + usage.credits_consumed, 0);
 
