@@ -120,40 +120,74 @@ export default function Hero() {
                
                                                                                                                                                                                                                                                  {/* 中间列 - 两个小的竖屏视频 */}
                    <div className="space-y-2 flex flex-col">
-                    {/* 上方竖屏视频 */}
-                                      <div className="aspect-[4/5] bg-black overflow-hidden rounded-sm flex items-center justify-center lg:w-full w-3/4 mx-auto">
-                       <video 
-                         className="h-full object-contain"
-                         autoPlay 
-                         loop 
-                         muted 
-                         playsInline
-                       >
-                         <source src="/Video6.mp4" type="video/mp4" />
-                       </video>
-                     </div>
-                     
-                     {/* Try Now按钮 - 只在移动端显示在Video6.mp4下面 */}
-                     <div className="block lg:hidden text-center mt-4">
-                       <Link href="/ai-effect-generator">
-                         <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                           {t('tryNow')}
-                         </button>
-                       </Link>
-                     </div>
+                    {/* 移动端：两个竖屏视频并排显示 */}
+                    <div className="block lg:hidden mt-8">
+                      <div className="grid grid-cols-2 gap-4">
+                        {/* Video6.mp4 */}
+                        <div className="aspect-[4/5] bg-black overflow-hidden rounded-sm flex items-center justify-center scale-125">
+                          <video 
+                            className="h-full object-contain"
+                            autoPlay 
+                            loop 
+                            muted 
+                            playsInline
+                          >
+                            <source src="/Video6.mp4" type="video/mp4" />
+                          </video>
+                        </div>
+                        
+                        {/* Video7.mp4 */}
+                        <div className="aspect-[4/5] bg-black overflow-hidden rounded-sm flex items-center justify-center scale-125">
+                          <video 
+                            className="h-full object-contain"
+                            autoPlay 
+                            loop 
+                            muted 
+                            playsInline
+                          >
+                            <source src="/Video7.mp4" type="video/mp4" />
+                          </video>
+                        </div>
+                      </div>
+                      
+                      {/* Try Now按钮 - 只在移动端显示在视频下面 */}
+                      <div className="text-center mt-12 mb-12">
+                        <Link href="/ai-effect-generator">
+                          <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                            {t('tryNow')}
+                          </button>
+                        </Link>
+                      </div>
+                    </div>
                     
-                    {/* 下方竖屏视频 */}
-                                      <div className="aspect-[4/5] bg-black overflow-hidden rounded-sm flex items-center justify-center">
-                       <video 
-                         className="h-full object-contain"
-                         autoPlay 
-                         loop 
-                         muted 
-                         playsInline
-                       >
-                         <source src="/Video7.mp4" type="video/mp4" />
-                       </video>
-                     </div>
+                    {/* 桌面端：保持原有的上下布局 */}
+                    <div className="hidden lg:flex flex-col space-y-2">
+                      {/* 上方竖屏视频 */}
+                      <div className="aspect-[4/5] bg-black overflow-hidden rounded-sm flex items-center justify-center">
+                        <video 
+                          className="h-full object-contain"
+                          autoPlay 
+                          loop 
+                          muted 
+                          playsInline
+                        >
+                          <source src="/Video6.mp4" type="video/mp4" />
+                        </video>
+                      </div>
+                      
+                      {/* 下方竖屏视频 */}
+                      <div className="aspect-[4/5] bg-black overflow-hidden rounded-sm flex items-center justify-center">
+                        <video 
+                          className="h-full object-contain"
+                          autoPlay 
+                          loop 
+                          muted 
+                          playsInline
+                        >
+                          <source src="/Video7.mp4" type="video/mp4" />
+                        </video>
+                      </div>
+                    </div>
                      
                      {/* 占位空间，让中间列与右侧列底部对齐 */}
                      <div className="flex-1"></div>
