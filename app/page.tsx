@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import Hero from '@/components/Hero'
@@ -14,19 +15,19 @@ export default function Home() {
       <Hero />
 
       {/* 案例展示区域 */}
-      <section id="showcase" className="py-32 relative z-10">
+      <section id="showcase" className="py-16 md:py-32 relative z-10 -mt-16 md:mt-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 drop-shadow-lg">
               {t('pageTitle')}
             </h2>
-            <p className="text-sm text-gray-400 mb-4 drop-shadow-md">
+            <p className="hidden md:block text-sm text-gray-400 mb-4 drop-shadow-md">
               {t('exploreCreativity')}
             </p>
-            <p className="text-lg text-gray-200 max-w-3xl mx-auto drop-shadow-md">
+            <p className="hidden md:block text-lg text-gray-200 max-w-3xl mx-auto drop-shadow-md">
               {t('showcaseDescription')}
             </p>
-            <p className="text-sm text-gray-400 max-w-3xl mx-auto drop-shadow-md">
+            <p className="hidden md:block text-sm text-gray-400 max-w-3xl mx-auto drop-shadow-md">
               {t('showcaseDescription')}
             </p>
           </div>
@@ -71,28 +72,28 @@ export default function Home() {
             {/* 案例3 - Character controls - 左右交叉布局 */}
             <div className="text-center">
               <h3 className="text-2xl font-bold text-white mb-2">{t('characterMotionControl')}</h3>
-              <p className="text-gray-200 mb-12 max-w-2xl mx-auto text-lg">
+              <p className="hidden md:block text-gray-200 mb-12 max-w-2xl mx-auto text-lg">
                 {t('characterMotionControlDesc')}
               </p>
               
               {/* 第一组：输入视频 + 说明 */}
               <div className="flex flex-col lg:flex-row items-center gap-12 mb-16 max-w-6xl mx-auto">
-                <div className="flex-1 lg:order-1">
-                  <div className="aspect-[9/16] bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl overflow-hidden shadow-2xl w-full max-w-sm mx-auto">
-                    <video 
-                      className="w-full h-full object-cover"
-                      autoPlay 
-                      loop 
-                      muted 
-                      playsInline
-                    >
-                      <source src="/Video6.mp4" type="video/mp4" />
-                    </video>
-                  </div>
-                </div>
+                 <div className="flex-1 lg:order-1">
+                   <div className="aspect-[9/16] bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl overflow-hidden shadow-2xl w-full max-w-sm mx-auto">
+                     <video 
+                       className="w-full h-full object-cover"
+                       autoPlay 
+                       loop 
+                       muted 
+                       playsInline
+                     >
+                       <source src="/Video6.mp4" type="video/mp4" />
+                     </video>
+                   </div>
+                 </div>
                 <div className="flex-1 lg:order-2 text-left">
                   <h4 className="text-xl font-semibold text-white mb-4">{t('motionCaptureInput')}</h4>
-                  <p className="text-gray-200 text-base leading-relaxed">
+                  <p className="hidden md:block text-gray-200 text-base leading-relaxed">
                     {t('motionCaptureInputDesc')}
                   </p>
                 </div>
@@ -115,7 +116,7 @@ export default function Home() {
                 </div>
                 <div className="flex-1 lg:order-1 text-left">
                   <h4 className="text-xl font-semibold text-white mb-4">{t('characterMotionMapping')}</h4>
-                  <p className="text-gray-200 text-base leading-relaxed">
+                  <p className="hidden md:block text-gray-200 text-base leading-relaxed">
                     {t('characterMotionMappingDesc')}
                   </p>
                 </div>
@@ -138,7 +139,7 @@ export default function Home() {
                 </div>
                 <div className="flex-1 lg:order-2 text-left">
                   <h4 className="text-xl font-semibold text-white mb-4">{t('characterAnimationOutput')}</h4>
-                  <p className="text-gray-200 text-base leading-relaxed">
+                  <p className="hidden md:block text-gray-200 text-base leading-relaxed">
                     {t('characterAnimationOutputDesc')}
                   </p>
                 </div>
@@ -161,13 +162,13 @@ export default function Home() {
                 </div>
                 <div className="flex-1 lg:order-1 text-left">
                   <h4 className="text-xl font-semibold text-white mb-4">{t('professionalLightingEffects')}</h4>
-                  <p className="text-gray-200 text-base leading-relaxed">
+                  <p className="hidden md:block text-gray-200 text-base leading-relaxed">
                     {t('professionalLightingEffectsDesc')}
                   </p>
                 </div>
               </div>
 
-              <p className="text-gray-200 text-base mt-12 max-w-4xl mx-auto">
+              <p className="hidden md:block text-gray-200 text-base mt-12 max-w-4xl mx-auto">
                 {t('realTimeMotionCapture')}
               </p>
             </div>
@@ -179,7 +180,7 @@ export default function Home() {
                 <h3 className="text-3xl font-bold text-white mb-2">{t('specialEffectsShowcase')}</h3>
                 <div className="mb-8">
                   <h4 className="text-lg font-semibold text-white mb-4">• {t('professionalDesignConcept')}</h4>
-                  <p className="text-gray-200 text-base leading-relaxed">
+                  <p className="hidden md:block text-gray-200 text-base leading-relaxed">
                     {t('specialEffectsShowcaseDesc')}
                   </p>
                 </div>

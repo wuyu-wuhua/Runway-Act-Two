@@ -121,7 +121,7 @@ export default function Hero() {
                                                                                                                                                                                                                                                  {/* 中间列 - 两个小的竖屏视频 */}
                    <div className="space-y-2 flex flex-col">
                     {/* 上方竖屏视频 */}
-                                      <div className="aspect-[4/5] bg-black overflow-hidden rounded-sm flex items-center justify-center">
+                                      <div className="aspect-[4/5] bg-black overflow-hidden rounded-sm flex items-center justify-center lg:w-full w-3/4 mx-auto">
                        <video 
                          className="h-full object-contain"
                          autoPlay 
@@ -131,6 +131,15 @@ export default function Hero() {
                        >
                          <source src="/Video6.mp4" type="video/mp4" />
                        </video>
+                     </div>
+                     
+                     {/* Try Now按钮 - 只在移动端显示在Video6.mp4下面 */}
+                     <div className="block lg:hidden text-center mt-4">
+                       <Link href="/ai-effect-generator">
+                         <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-lg text-base transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                           {t('tryNow')}
+                         </button>
+                       </Link>
                      </div>
                     
                     {/* 下方竖屏视频 */}
@@ -207,8 +216,8 @@ export default function Hero() {
                           </div>
                         </div>
                   
-                                                                                   {/* 立即体验按钮 */}
-              <div className="text-center mt-6">
+                                                                                   {/* 立即体验按钮 - 桌面端显示 */}
+              <div className="hidden lg:block text-center mt-6">
                 <Link href="/ai-effect-generator">
                   <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 rounded-lg text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
                     {t('tryNow')}
