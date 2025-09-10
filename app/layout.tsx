@@ -76,18 +76,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className={inter.className}>
-        <LanguageProvider>
-          <AuthProvider>
-            <div className="min-h-screen bg-gray-50">
-              {children}
-              <Feedback />
-              <CookieConsentProvider />
-              <GoogleAnalytics />
-              <MicrosoftClarity />
-
-            </div>
-          </AuthProvider>
-        </LanguageProvider>
+        {children}
       </body>
     </html>
   )

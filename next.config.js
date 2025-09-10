@@ -6,6 +6,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   
+  
   // 添加安全头部
   async headers() {
     return [

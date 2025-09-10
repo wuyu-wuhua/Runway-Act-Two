@@ -1,71 +1,87 @@
 "use client";
 
-import { useState } from 'react';
-import { useLanguage } from '@/lib/languageContext';
+import { useLanguage } from '@/lib/languageContext'
+import { usePathname, useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export default function LanguageSwitcher() {
-  const { language, setLanguage } = useLanguage();
-  const [isOpen, setIsOpen] = useState(false);
+  const { language, setLanguage } = useLanguage()
+  const pathname = usePathname()
+  const router = useRouter()
+  const [isOpen, setIsOpen] = useState(false)
 
-  const handleLanguageChange = (lang: 'zh' | 'en') => {
-    setLanguage(lang);
-    setIsOpen(false);
-  };
+  const languages = [
+    { code: 'zh', name: '中文', flag: '🇨🇳' },
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'ur', name: 'اردو', flag: '🇵🇰' },
+    { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' },
+    { code: 'ar', name: 'العربية', flag: '🇲🇦' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+    { code: 'mx', name: 'Español (MX)', flag: '🇲🇽' },
+    { code: 'uk', name: 'Українська', flag: '🇺🇦' }
+  ]
+
+  const handleLanguageChange = (newLang: 'zh' | 'en' | 'hi' | 'es' | 'ur' | 'id' | 'ar' | 'de' | 'ru' | 'mx' | 'uk') => {
+    if (newLang === language) return
+
+    // 更新语言状态
+    setLanguage(newLang)
+    
+    // 更新URL路径
+    const segments = pathname.split('/')
+    segments[1] = newLang // 替换语言代码
+    const newPath = segments.join('/')
+    
+    router.push(newPath)
+    setIsOpen(false)
+  }
+
+  const currentLanguage = languages.find(lang => lang.code === language)
 
   return (
     <div className="relative">
-      {/* 地球图标按钮 */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all duration-200 backdrop-blur-sm border border-white/20"
-        title="切换语言"
+        className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        <span>{currentLanguage?.flag}</span>
+        <span>{currentLanguage?.name}</span>
+        <svg
+          className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
-      {/* 语言选项下拉菜单 */}
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-32 bg-black/80 backdrop-blur-md border border-white/20 rounded-lg shadow-xl z-50">
+        <div className="absolute right-0 z-10 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
           <div className="py-1">
-            <button
-              onClick={() => handleLanguageChange('zh')}
-              className={`w-full px-4 py-2 text-left text-sm transition-colors ${
-                language === 'zh'
-                  ? 'bg-white text-black'
-                  : 'text-white hover:bg-white/10'
-              }`}
-            >
-              <div className="flex items-center space-x-2">
-                <span className="text-lg">🇨🇳</span>
-                <span>中文</span>
-              </div>
-            </button>
-            <button
-              onClick={() => handleLanguageChange('en')}
-              className={`w-full px-4 py-2 text-left text-sm transition-colors ${
-                language === 'en'
-                  ? 'bg-white text-black'
-                  : 'text-white hover:bg-white/10'
-              }`}
-            >
-              <div className="flex items-center space-x-2">
-                <span className="text-lg">🇺🇸</span>
-                <span>English</span>
-              </div>
-            </button>
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => handleLanguageChange(lang.code as 'zh' | 'en' | 'hi' | 'es' | 'ur' | 'id' | 'ar' | 'de' | 'ru' | 'mx' | 'uk')}
+                className={`w-full text-left px-4 py-2 text-sm flex items-center space-x-3 hover:bg-gray-100 ${
+                  language === lang.code ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700'
+                }`}
+              >
+                <span>{lang.flag}</span>
+                <span>{lang.name}</span>
+                {language === lang.code && (
+                  <svg className="w-4 h-4 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </button>
+            ))}
           </div>
         </div>
       )}
-
-      {/* 点击外部关闭下拉菜单 */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-40" 
-          onClick={() => setIsOpen(false)}
-        />
-      )}
     </div>
-  );
-} 
+  )
+}

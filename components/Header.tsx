@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useLanguage } from '@/lib/languageContext'
 import { useAuth } from '@/lib/authContext'
@@ -13,6 +14,20 @@ export default function Header() {
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false)
   const { t } = useLanguage()
   const { user, loading } = useAuth()
+  const pathname = usePathname()
+  
+  // 从当前路径中提取语言代码
+  const getLanguageFromPath = (path: string) => {
+    const segments = path.split('/')
+    return segments[1] || 'zh'
+  }
+  
+  const currentLang = getLanguageFromPath(pathname)
+  
+  // 创建多语言链接的辅助函数
+  const createLocalizedLink = (path: string) => {
+    return `/${currentLang}${path}`
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
@@ -20,7 +35,7 @@ export default function Header() {
         <div className="flex items-center justify-between w-full px-4 md:px-8">
           {/* Logo - Mobile optimized */}
           <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center">
+            <Link href={createLocalizedLink('')} className="flex items-center">
               {/* 抽象图标 */}
               <div className="w-6 h-6 md:w-8 md:h-8 mr-2 md:mr-3">
                 <svg className="w-full h-full text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,13 +48,13 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-6 lg:space-x-8">
-            <Link href="/" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium transition-all duration-200">
+            <Link href={createLocalizedLink('')} className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium transition-all duration-200">
               {t('home')}
             </Link>
-            <Link href="/ai-effect-generator" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium transition-all duration-200">
+            <Link href={createLocalizedLink('/ai-effect-generator')} className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium transition-all duration-200">
               {t('aiEffectGenerator')}
             </Link>
-            <Link href="/pricing" className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium transition-all duration-200">
+            <Link href={createLocalizedLink('/pricing')} className="text-white hover:text-gray-300 px-3 py-2 text-sm font-medium transition-all duration-200">
               {t('pricing')}
             </Link>
           </nav>
@@ -86,21 +101,21 @@ export default function Header() {
           <div className="md:hidden mt-4 pt-4 border-t border-white/10">
             <div className="space-y-1">
               <Link 
-                href="/" 
+                href={createLocalizedLink('')} 
                 className="text-white hover:text-gray-300 block px-4 py-3 text-base font-medium rounded-lg hover:bg-white/5 transition-all duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('home')}
               </Link>
               <Link 
-                href="/ai-effect-generator" 
+                href={createLocalizedLink('/ai-effect-generator')} 
                 className="text-white hover:text-gray-300 block px-4 py-3 text-base font-medium rounded-lg hover:bg-white/5 transition-all duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('aiEffectGenerator')}
               </Link>
               <Link 
-                href="/pricing" 
+                href={createLocalizedLink('/pricing')} 
                 className="text-white hover:text-gray-300 block px-4 py-3 text-base font-medium rounded-lg hover:bg-white/5 transition-all duration-200"
                 onClick={() => setIsMenuOpen(false)}
               >
