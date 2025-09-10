@@ -1,7 +1,7 @@
 export const translations = {
   zh: {
     // 页面标题和导航
-    pageTitle: "Runway Act Two - AI动作捕捉与角色动画控制平台",
+    pageTitle: "Runway Act Two AI动作捕捉与角色动画控制平台",
     exploreCreativity: "探索AI动作捕捉的无限可能",
     showcaseDescription: "通过先进的AI动作捕捉技术，将您的真实动作精确映射到虚拟角色上。支持实时动作同步、多角色映射、专业光效处理等功能，为游戏开发、虚拟直播、教育培训和创意制作提供专业级解决方案。",
     
@@ -454,7 +454,7 @@ export const translations = {
   
   en: {
     // Page titles and navigation
-    pageTitle: "Runway Act Two - AI Motion Capture & Character Animation Control Platform",
+    pageTitle: "Runway Act Two AI Motion Capture & Character Animation Control Platform",
     exploreCreativity: "Explore the Infinite Possibilities of AI Motion Capture",
     showcaseDescription: "Through advanced AI motion capture technology, precisely map your real movements to virtual characters. Supports real-time motion synchronization, multi-character mapping, professional lighting effects, and more. Provides professional-level solutions for game development, virtual streaming, educational training, and creative production.",
     
